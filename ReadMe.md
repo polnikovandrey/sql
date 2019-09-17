@@ -1,6 +1,8 @@
 ## Docker + MySql + Flyway
 
 ### Docker tls security
+####!!! On Windows Docker Desktop tls connection is available only with Windows containers !!!
+
 Correct paths for server config https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-docker/configure-docker-daemon
 
 Daemon workflow overview https://docs.docker.com/engine/reference/commandline/dockerd/
