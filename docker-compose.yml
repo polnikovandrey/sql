@@ -3,6 +3,8 @@ services:
   flyway:
     image: flyway/flyway
     command: -url=jdbc:mysql://db -schemas=myschema -user=root -password=P@ssw0rd+ -connectRetries=60 migrate
+    volumes:
+      - ./flyway:/flyway/sql
     depends_on:
       - db
   db:
@@ -13,6 +15,5 @@ services:
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=P@ssw0rd+
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     ports:
       - 3306:3306
