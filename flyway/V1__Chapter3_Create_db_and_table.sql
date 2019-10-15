@@ -17,9 +17,10 @@ SHOW DATABASES;
 CREATE DATABASE cats_app;
 USE cats_app;
 # Create a table with some columns. Note: plural noun recommended for table name.
-CREATE TABLE cats(
+CREATE TABLE cats
+(
     name VARCHAR(100),
-    age INT
+    age  INT
 );
 # Show tables in actual database
 SHOW TABLES;
@@ -35,8 +36,9 @@ CREATE DATABASE pastry_shop;
 SHOW DATABASES;
 USE pastry_shop;
 SELECT DATABASE();
-CREATE TABLE pastries(
-    name VARCHAR(50),
+CREATE TABLE pastries
+(
+    name     VARCHAR(50),
     quantity INT
 );
 SHOW TABLES;
