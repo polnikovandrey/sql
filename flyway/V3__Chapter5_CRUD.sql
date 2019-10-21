@@ -47,12 +47,57 @@ SELECT cat_id, age
 FROM cats
 WHERE cat_id = age;
 # Note the usage of alias AS operator. It's used for "relabeling" (cat_id -> id) query result column names.
+# Note: bug exists, which disable column renaming with aliases. MySql Connector/J specific.
 SELECT cat_id AS id, name
 FROM cats;
-SELECT name AS 'cat name', breed AS 'kitty breed'
+SELECT name AS "cat_name", breed AS "kitty_breed"
 FROM cats;
 
+SELECT cat_id, name, breed FROM cats WHERE breed='Tabby';
+UPDATE cats SET breed='Shorthair' WHERE breed='Tabby';
+SELECT cat_id, name, breed FROM cats WHERE breed='Tabby';
+SELECT cat_id, name, breed FROM cats WHERE breed='Shorthair';
 
+SELECT name, age FROM cats WHERE name='Misty';
+UPDATE cats SET age=14 WHERE name='Misty';
+SELECT name, age FROM cats WHERE name='Misty';
+
+SELECT cat_id, name FROM cats WHERE name='Jackson';
+UPDATE cats SET name='Jack' WHERE name='Jackson';
+SELECT cat_id, name FROM cats WHERE name='Jackson';
+SELECT cat_id, name FROM cats WHERE name='Jack';
+
+SELECT cat_id, name, breed FROM cats WHERE name='Ringo';
+UPDATE cats SET breed='British Shorthair' WHERE name='Ringo';
+SELECT cat_id, name, breed FROM cats WHERE name='Ringo';
+
+SELECT cat_id, breed, age FROM cats WHERE breed='Maine Coon';
+UPDATE cats SET age=12 WHERE breed='Maine Coon';
+SELECT cat_id, breed, age FROM cats WHERE breed='Maine Coon';
+
+SELECT cat_id, breed FROM cats;
+# Note: UPDATE without WHERE updates every row in table.
+# noinspection SqlWithoutWhere
+UPDATE cats SET breed='Unknown';
+SELECT cat_id, breed FROM cats;
+
+SELECT * FROM cats WHERE name='Egg';
+DELETE FROM cats WHERE name='Egg';
+SELECT * FROM cats WHERE name='Egg';
+
+SELECT cat_id, name, age FROM cats WHERE age=4;
+DELETE FROM cats WHERE age=4;
+SELECT cat_id, name, age FROM cats WHERE age=4;
+
+SELECT cat_id, name, age FROM cats WHERE age=cat_id;
+DELETE FROM cats WHERE age=cat_id;
+SELECT cat_id, name, age FROM cats WHERE age=cat_id;
+
+SELECT * FROM cats;
+# Note: DELETE without WHERE deletes all rows in table.
+# noinspection SqlWithoutWhere
+DELETE FROM cats;
+SELECT * FROM cats;
 
 DROP TABLE cats;
 DROP DATABASE cats_app;
