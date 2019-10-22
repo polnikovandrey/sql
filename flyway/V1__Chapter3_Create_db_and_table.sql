@@ -1,5 +1,6 @@
 # $mysql-ctl cli;           # Start the CLI (command line interface)
-
+-- SQL ignores such string (silent comment).
+# SQL prints such strings (debug output).
 # Create database with name
 CREATE DATABASE soap_shop;
 # Select database for use
