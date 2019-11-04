@@ -38,6 +38,7 @@ VALUES ('Svetlana', 'Polnikava', 65),
 SELECT *
 FROM people;
 DROP TABLE people;
+DROP DATABASE people_app;
 
 # Need to override sql_mode for Warnings to work as in the course.
 SELECT @@session.sql_mode;
