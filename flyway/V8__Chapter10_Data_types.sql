@@ -30,4 +30,20 @@ INSERT INTO items (price) VALUES (298.9999);
 # Note: the same rounding takes place, stored value is 2.00.
 INSERT INTO items (price) VALUES (1.9999);
 SELECT * FROM items;
+DROP TABLE dogs;
 
+# Difference between DECIMAL and FLOAT/DOUBLE: DECIMAL is fixed-point type and calculations are exact, FLOAT/DOUBLE are floating-point types and calculations are approximate.
+# So FLOAT/DOUBLE use less space/memory and could be used to store larger numbers, BUT at the cost of precision.
+# FLOAT uses 4 bytes and has precision issues after ~7 digits. DOUBLE uses 8 bytes and has precision issues after ~15 digits.
+# Generally, FLOAT/DOUBLE values are good for scientific Calculations, but should not be used for Financial/Monetary Values. For Business Oriented Math, always use DECIMAL.
+# A precision from 0 to 23 results in a 4-byte single-precision FLOAT column. A precision from 24 to 53 results in an 8-byte double-precision DOUBLE column.
+# For maximum portability, code requiring storage of approximate numeric data values should use FLOAT or DOUBLE PRECISION with no specification of precision or number of digits.
+# Note: 38 is the maximum number of digits for DECIMAL.
+CREATE TABLE decimals_precision (num_decimal DECIMAL(38, 18), num_second FLOAT, num_third DOUBLE);
+INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (123456, 123456, 123456);
+INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (1234567, 1234567, 1234567);
+INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (123456789, 123456789, 123456789);
+INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (123456789.123456789, 123456789.123456789, 123456789.123456789);
+INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (1234567890123456789, 1234567890123456789, 1234567890123456789);
+INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (1234567890123456789.1234567890123456789, 1234567890123456789.1234567890123456789, 1234567890123456789.1234567890123456789);
+SELECT * FROM decimals_precision;
