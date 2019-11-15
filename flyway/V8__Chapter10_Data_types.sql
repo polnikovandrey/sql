@@ -47,3 +47,64 @@ INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (12345
 INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (1234567890123456789, 1234567890123456789, 1234567890123456789);
 INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (1234567890123456789.1234567890123456789, 1234567890123456789.1234567890123456789, 1234567890123456789.1234567890123456789);
 SELECT * FROM decimals_precision;
+DROP TABLE decimals_precision;
+
+# DATE type stores date wo time, "YYYY-MM-DD" format.
+# TIME type stores time wo date, "HH:MM:SS" format.
+# DATETIME type stores both date and time, "YYYY-MM-DD HH:MM:SS" format.
+CREATE TABLE people(name VARCHAR(100), birthdate DATE, birthtime TIME, birthboth DATETIME);
+INSERT INTO people (name, birthdate, birthtime, birthboth)
+ VALUES ('Padma', '1989-12-30', '18:17:30', '1989-12-30 18:17:30'),
+        ('Larry', '1985-10-24', '20:45:15', '1985-10-24 20:45:15');
+
+# CURDATE() function returns current date wo time.
+SELECT CURDATE();
+# CURTIME() function returns current time wo date.
+SELECT CURTIME();
+# NOW() function returns both date and time.
+SELECT NOW();
+INSERT INTO people (name, birthdate, birthtime, birthboth)
+VALUES ('Henry', CURDATE(), CURTIME(), NOW());
+SELECT * FROM people;
+
+# DAY() DD; DAYOFMONTH() synonym to DAY() DD; DAYNAME() Friday; WEEKDAY() 0-Monday 0-6; DAYOFWEEK() 1-Sunday 1-7; DAYOFYEAR() 365.
+SELECT name, DAY(birthdate), DAYOFMONTH(birthdate), DAYNAME(birthdate), WEEKDAY(birthdate), DAYOFWEEK(birthdate), DAYOFYEAR(birthdate) FROM people;
+# MONTH() 1-12, MONTHNAME() May
+SELECT name, MONTH(birthdate), MONTHNAME(birthdate) FROM people;
+# HOUR(), MINUTE(), SECOND()
+SELECT name, HOUR(birthtime), MINUTE(birthtime), SECOND(birthtime) FROM people;
+SELECT name, CONCAT(MONTHNAME(birthboth), ' ', DAY(birthboth), ' ', YEAR(birthboth)) as 'Date of birth' FROM people;
+# DATE_FORMAT() - convenient way to format dates wo CONCAT(). Note: result is the same as of previous query.
+SELECT name, DATE_FORMAT(birthboth, '%M %d %Y') FROM people;
+SELECT DATE_FORMAT('1981-06-20 08:15:05', 'Was born on %M %d %Y');
+
+# DATEDIFF(date1, date2) calculates signed days difference between two dates (time is ignored).
+SELECT DATEDIFF('1981-06-20 08:15:05', NOW());
+# DATE_ADD(date, INTERVAL expr unit), DATE_SUB(date, INTERVAL expr unit). Note: INTERVAL could be used in arithmetic-like expressions (+-).
+SELECT DATE_ADD(NOW(), INTERVAL 1 DAY);
+SELECT NOW() - INTERVAL 1 DAY + INTERVAL 2 HOUR;
+DROP TABLE people;
+
+# TIMESTAMP type is like DATETIME. They differ in memory usage - 8 bytes for DATETIME vs 4 bytes for TIMESTAMP. Also, they differ in ranges:
+# DATETIME '1000-01-01 00:00:00' - '9999-12-31 23;59:59'
+# TIMESTAMP '1970-01-01 00:00:01'UTC - '2038-01-19 03:14:07'UTC
+# TIMESTAMP is basically used for storing unmodified date of creation, see example below.
+CREATE TABLE comments (
+    content VARCHAR(100),
+    created TIMESTAMP DEFAULT NOW()
+);
+INSERT INTO comments (content) VALUES ('Content1'), ('Content2'), ('Content3');
+# TIMESTAMP values are the same in this particular example (single query).
+SELECT created FROM comments;
+# Note: ON UPDATE CURRENT_TIMESTAMP means that UPDATE query will modify TIMESTAMP value to NOW() automatically. CURRENT_TIMESTAMP is same as NOW(), so NOW() could be used instead.
+CREATE TABLE comments2 (
+    content VARCHAR(100),
+    changed TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP
+);
+INSERT INTO comments2 (content) VALUES ('Content1'), ('Content2'), ('Content3');
+UPDATE comments2 SET content='Content1 modified' WHERE content='Content1';
+SELECT changed FROM comments2 WHERE content='Content1 modified';
+
+
+
+
