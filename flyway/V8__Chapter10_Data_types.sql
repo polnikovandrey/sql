@@ -40,12 +40,13 @@ DROP TABLE dogs;
 # For maximum portability, code requiring storage of approximate numeric data values should use FLOAT or DOUBLE PRECISION with no specification of precision or number of digits.
 # Note: 38 is the maximum number of digits for DECIMAL.
 CREATE TABLE decimals_precision (num_decimal DECIMAL(38, 18), num_second FLOAT, num_third DOUBLE);
-INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (123456, 123456, 123456);
-INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (1234567, 1234567, 1234567);
-INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (123456789, 123456789, 123456789);
-INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (123456789.123456789, 123456789.123456789, 123456789.123456789);
-INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (1234567890123456789, 1234567890123456789, 1234567890123456789);
-INSERT INTO decimals_precision (num_decimal, num_second, num_third)VALUES (1234567890123456789.1234567890123456789, 1234567890123456789.1234567890123456789, 1234567890123456789.1234567890123456789);
+INSERT INTO decimals_precision (num_decimal, num_second, num_third) VALUES (123456, 123456, 123456);
+INSERT INTO decimals_precision (num_decimal, num_second, num_third) VALUES (1234567, 1234567, 1234567);
+INSERT INTO decimals_precision (num_decimal, num_second, num_third) VALUES (123456789, 123456789, 123456789);
+INSERT INTO decimals_precision (num_decimal, num_second, num_third) VALUES (123456789.123456789, 123456789.123456789, 123456789.123456789);
+INSERT INTO decimals_precision (num_decimal, num_second, num_third) VALUES (1234567890123456789, 1234567890123456789, 1234567890123456789);
+INSERT INTO decimals_precision (num_decimal, num_second, num_third)
+VALUES (1234567890123456789.1234567890123456789, 1234567890123456789.1234567890123456789, 1234567890123456789.1234567890123456789);
 SELECT * FROM decimals_precision;
 DROP TABLE decimals_precision;
 
@@ -96,6 +97,7 @@ CREATE TABLE comments (
 INSERT INTO comments (content) VALUES ('Content1'), ('Content2'), ('Content3');
 # TIMESTAMP values are the same in this particular example (single query).
 SELECT created FROM comments;
+DROP TABLE comments;
 # Note: ON UPDATE CURRENT_TIMESTAMP means that UPDATE query will modify TIMESTAMP value to NOW() automatically. CURRENT_TIMESTAMP is same as NOW(), so NOW() could be used instead.
 CREATE TABLE comments2 (
     content VARCHAR(100),
@@ -104,7 +106,28 @@ CREATE TABLE comments2 (
 INSERT INTO comments2 (content) VALUES ('Content1'), ('Content2'), ('Content3');
 UPDATE comments2 SET content='Content1 modified' WHERE content='Content1';
 SELECT changed FROM comments2 WHERE content='Content1 modified';
+DROP TABLE comments2;
 
+# Current time
+SELECT CURTIME();
+# Current date
+SELECT CURDATE();
+# Current day of week (number)
+SELECT DAYOFWEEK(NOW());
+# Current day of week (name)
+SELECT DAYNAME(NOW());
+# Current day in format mm/dd/yyyy
+SELECT DATE_FORMAT(NOW(), '%m/%d/%Y');
+# Current date in format "January 2nd at 3:15"
+SELECT DATE_FORMAT(NOW(), '%M %D at %k:%i');
+# Tweets table
+CREATE TABLE tweets (
+    content VARCHAR(140),
+    username VARCHAR(100),
+    created TIMESTAMP DEFAULT NOW());
+INSERT INTO tweets (content, username) VALUES ('Tweet content', 'Polni');
+SELECT * FROM tweets;
+DROP TABLE tweets;
 
 
 
