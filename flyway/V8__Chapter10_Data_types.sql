@@ -128,6 +128,6 @@ CREATE TABLE tweets (
 INSERT INTO tweets (content, username) VALUES ('Tweet content', 'Polni');
 SELECT * FROM tweets;
 DROP TABLE tweets;
-
+DROP DATABASE data_types;
 
 
