@@ -84,7 +84,6 @@ SELECT DATEDIFF('1981-06-20 08:15:05', NOW());
 # DATE_ADD(date, INTERVAL expr unit), DATE_SUB(date, INTERVAL expr unit). Note: INTERVAL could be used in arithmetic-like expressions (+-).
 SELECT DATE_ADD(NOW(), INTERVAL 1 DAY);
 SELECT NOW() - INTERVAL 1 DAY + INTERVAL 2 HOUR;
-DROP TABLE people;
 
 # TIMESTAMP type is like DATETIME. They differ in memory usage - 8 bytes for DATETIME vs 4 bytes for TIMESTAMP. Also, they differ in ranges:
 # DATETIME '1000-01-01 00:00:00' - '9999-12-31 23;59:59'
@@ -128,6 +127,3 @@ CREATE TABLE tweets (
 INSERT INTO tweets (content, username) VALUES ('Tweet content', 'Polni');
 SELECT * FROM tweets;
 DROP TABLE tweets;
-DROP DATABASE data_types;
-
-
