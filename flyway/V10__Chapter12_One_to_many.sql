@@ -127,5 +127,5 @@ SELECT NULL >= 75;
 # DROP TABLE students;
 # Note: multiple tables simultaneous dropping.
 DROP TABLE papers, students;
-DROP TABLE customers;
+DROP TABLE customers, orders;
 DROP DATABASE customers;
