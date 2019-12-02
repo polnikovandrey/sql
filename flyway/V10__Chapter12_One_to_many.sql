@@ -17,27 +17,37 @@ CREATE TABLE customers (
     email VARCHAR(100)
 );
 # FOREIGN KEY constraints column data to refer to existing record in a foreign table.
+# FOREIGN KEY also prevents the deletion of a record in a foreign table, which is referenced from the dependent table (exception is thrown).
+# FOREIGN KEY also prevents the dropping of a foreign table, if there are references from the dependent table (exception is thrown).
+# ON DELETE CASCADE tdd property - if there is a FOREIGN  KEY relationship and the record is deleted from ONE table - corresponding record from MANY table.
 # The convention for FOREIGN KEY column name is "referenced table name"_"referenced column name".
 CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_date DATE,
     amount DECIMAL(8, 2),
     customer_id INT,
-    FOREIGN KEY(customer_id) REFERENCES customers(id)
+    FOREIGN KEY(customer_id) REFERENCES customers(id) ON DELETE CASCADE
 );
 INSERT INTO customers (first_name, last_name, email)
 VALUES ('Boy', 'George', 'george@gmail.com'),
        ('George', 'Michael', 'gm@gmail.com'),
        ('David', 'Bowie', 'david@gmail.com'),
        ('Blue', 'Steele', 'blue@gmail.com'),
-       ('Bette', 'Davis', 'bette@aol.com');
+       ('Bette', 'Davis', 'bette@aol.com'),
+       ('Frank', 'Sinatra', 'fsin@yahoo.com');
 INSERT INTO orders (order_date, amount, customer_id)
 VALUES ('2016/02/10', 99.99, 1),
        ('2017/11/11', 35.50, 1),
        ('2014/12/12', 800.67, 2),
        ('2015/01/03', 12.50, 2),
-       ('1999/04/11', 450.25, 5);
+       ('1999/04/11', 450.25, 5),
+       ('1985/03/12', 300.14, 6),
+       ('1987/04/15', 20.41, 6);
 
+# Note: corresponding orders will be deleted because of ON DELETE CASCADE.
+DELETE FROM customers WHERE last_name = 'Sinatra';
+SELECT * FROM customers;
+SELECT * FROM orders;
 
 # Select all orders by Boy George customer using subquery (possible, but INCONVENIENT and SLOW method). Joins could be used to solve the problem the RIGHT way.
 SELECT * FROM orders WHERE customer_id = (SELECT id FROM customers WHERE first_name = 'Boy' AND last_name = 'George');
@@ -69,10 +79,53 @@ SELECT first_name, last_name, SUM(amount) FROM customers LEFT JOIN orders ON cus
 # IFNULL() method could be used to replace the value1 with value2 if value1 is NULL, and leave value1 as is otherwise.
 SELECT first_name, last_name, IFNULL(SUM(amount), 0) FROM customers LEFT JOIN orders ON customers.id = orders.customer_id GROUP BY customers.id;
 
+# Right join is same as Left join, but it takes every record from JOIN table and only intersection from FROM table.
+# "FROM table1 RIGHT JOIN table2 ON" is exactly the same as "FROM table2 LEFT JOIN table1 ON".
+# Note: in this particular example query the result is identical to INNER JOIN because there are no orders without customer' id.
+SELECT * FROM customers RIGHT JOIN orders ON customers.id = orders.customer_id;
 
 
+CREATE TABLE students (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(100)
+);
+CREATE TABLE papers (
+    title VARCHAR(100),
+    grade INT,
+    student_id INT,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
+INSERT INTO students (first_name) VALUES
+('Caleb'),
+('Samantha'),
+('Raj'),
+('Carlos'),
+('Lisa');
+INSERT INTO papers (student_id, title, grade ) VALUES
+(1, 'My First Book Report', 60),
+(1, 'My Second Book Report', 75),
+(2, 'Russian Lit Through The Ages', 94),
+(2, 'De Montaigne and The Art of The Essay', 98),
+(4, 'Borges and Magical Realism', 89);
+SELECT * FROM students;
+SELECT * FROM papers;
 
+SELECT first_name, title, grade FROM students JOIN papers ON students.id = papers.student_id ORDER BY grade DESC;
+SELECT first_name, title, grade FROM students LEFT JOIN papers ON students.id = papers.student_id ORDER BY grade DESC;
+SELECT first_name, IFNULL(title, 'MISSING'), IFNULL(grade, 0) FROM students LEFT JOIN papers ON students.id = papers.student_id ORDER BY grade DESC;
+SELECT first_name, IFNULL(AVG(grade), 0) FROM students LEFT JOIN papers ON students.id = papers.student_id GROUP BY students.first_name;
+SELECT first_name, IFNULL(AVG(grade), 0) AS average,
+       CASE
+           WHEN AVG(grade) IS NULL THEN 'FAILING'
+           WHEN AVG(grade) >= 75 THEN 'PASSING'
+           ELSE 'FAILING' END AS passing_status
+FROM students LEFT JOIN papers ON students.id = papers.student_id GROUP BY students.first_name;
+# Note: the result is NULL (or empty - settings-based). So it's better to check with IS NULL in the CASE statement.
+SELECT NULL >= 75;
 
-
-# DROP TABLE customers;
-# DROP DATABASE customers;
+# Note: there is no possibility to delete "ONE" table, because it has references from MANY table. Exception will be thrown.
+# DROP TABLE students;
+# Note: multiple tables simultaneous dropping.
+DROP TABLE papers, students;
+DROP TABLE customers;
+DROP DATABASE customers;
