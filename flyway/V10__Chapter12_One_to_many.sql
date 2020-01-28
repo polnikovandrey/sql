@@ -6,7 +6,8 @@
 # The BAD alternative is to use one huge table with all the data, but there would be numerous duplications and NULLS in such a table.
 # Primary key is always and guaranteed unique (by autoincrement) and usually is used to store ids of distinct records (entities) in a table.
 # Foreign key is a reference to another table's primary key, so a single pk could be used as a reference multiple times (one- or many-to-many relation).
-# Foreign key must be declared in table definition to allow db check relation correctness (to check if according primary key exists). That is one, but not only reason to declare.
+# Foreign key must be declared in table definition to allow db check relation correctness (to check if according primary key exists).
+# That is one, but not the only reason to declare a foreign key.
 CREATE DATABASE customers;
 USE customers;
 # PRIMARY KEY declaration constraints column data to be unique, but data must be supplied manually. AUTO_INCREMENT forces db to generate unique data automatically.
