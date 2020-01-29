@@ -17,3 +17,28 @@ services:
       - MYSQL_ROOT_PASSWORD=P@ssw0rd+
     ports:
       - 3306:3306
+  nodejs:
+    image: node
+# TODO wait.sh instead of depends_on
+# command: ./wait-for.sh db:27017 -- /home/node/app/node_modules/.bin/nodemon app.js
+# "dev" script is defined in package.json under "scripts" section.
+    command: npm run dev
+    depends_on:
+      - db
+    restart: always
+    volumes:
+      - ./nodejs:/var/lib/nodejs
+    working_dir: /var/lib/nodejs
+    ports:
+      - 1234:1234
+      - 1235:1235
+# TODO mysql variables
+#    environment:
+#      - MONGO_USERNAME=$MONGO_USERNAME
+#      - MONGO_PASSWORD=$MONGO_PASSWORD
+#      - MONGO_HOSTNAME=db
+#      - MONGO_PORT=$MONGO_PORT
+#      - MONGO_DB=$MONGO_DB
+#    networks:
+#      - app-network
+
