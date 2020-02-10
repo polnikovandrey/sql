@@ -11,6 +11,7 @@
   "license": "GNU",
   "dependencies": {
     "express": "^4.17.1",
+    "npm": "^6.13.7",
     "run": "^1.4.0",
     "start": "^5.1.0"
   }
