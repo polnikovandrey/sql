@@ -1,12 +1,5 @@
 version: "3.7"
 services:
-  flyway:
-    image: flyway/flyway
-    command: -url=jdbc:mysql://db -schemas=myschema -user=root -password=P@ssw0rd+ -connectRetries=60 -X migrate
-    volumes:
-      - ./flyway:/flyway/sql
-    depends_on:
-      - db
   db:
     image: mysql
     volumes:
@@ -17,21 +10,26 @@ services:
       - MYSQL_ROOT_PASSWORD=P@ssw0rd+
     ports:
       - 3306:3306
-  nodejs:
-    image: node
-# TODO wait.sh instead of depends_on
-# command: ./wait-for.sh db:27017 -- /home/node/app/node_modules/.bin/nodemon app.js
-# "dev" script is defined in package.json under "scripts" section.
-    command: npm run dev
+  flyway:
+    image: flyway/flyway
+    volumes:
+      - ./flyway:/flyway/sql
     depends_on:
       - db
-    restart: always
+    command: -url=jdbc:mysql://db -schemas=myschema -user=root -password=P@ssw0rd+ -connectRetries=60 -X migrate
+  nodejs:
+    image: node
     volumes:
       - ./nodejs:/var/lib/nodejs
     working_dir: /var/lib/nodejs
-    ports:
-      - 1234:1234
-      - 1235:1235
+    restart: always
+#    depends_on:
+#      - db
+#    command: npm install run start
+    command: ["bash", "-c", "./wait-for-it.sh db:3306 -- npm install run start"]
+#    ports:
+#      - 1234:1234
+#      - 1235:1235
 # TODO mysql variables
 #    environment:
 #      - MONGO_USERNAME=$MONGO_USERNAME

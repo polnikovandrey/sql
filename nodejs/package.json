@@ -10,6 +10,8 @@
   "author": "Andrey Polnikov <polnikov.andrey@gmail.com>",
   "license": "GNU",
   "dependencies": {
-
+    "express": "^4.17.1",
+    "run": "^1.4.0",
+    "start": "^5.1.0"
   }
 }

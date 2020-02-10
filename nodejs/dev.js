@@ -1,1 +1,1 @@
-console.log('Running dev script');
+console.log(Date.now() + 'Running dev script');

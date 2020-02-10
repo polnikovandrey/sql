@@ -24,3 +24,4 @@ test-output/
 /bin/
 /.springBeans
 /m8client.launch
+nodejs/node_modules/
