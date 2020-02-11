@@ -1,42 +1,49 @@
 version: "3.7"
 services:
-  db:
+  mysql:
     image: mysql
     volumes:
       - type: tmpfs
         target: /var/lib/mysql
+    networks:
+      - docker_xxx
+    ports:
+      - 3306:3306
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=P@ssw0rd+
-    ports:
-      - 3306:3306
+#      - MYSQL_DATABASE=database
+#      - MYSQL_USER=user
+#      - MYSQL_PASSWORD=passwd
   flyway:
+    depends_on:
+      - mysql
     image: flyway/flyway
     volumes:
       - ./flyway:/flyway/sql
-    depends_on:
-      - db
-    command: -url=jdbc:mysql://db -schemas=myschema -user=root -password=P@ssw0rd+ -connectRetries=60 -X migrate
+    networks:
+      - docker_xxx
+    command: -url=jdbc:mysql://mysql -schemas=myschema -user=root -password=P@ssw0rd+ -connectRetries=60 -X migrate
   nodejs:
+#    depends_on:
+#      - mysql
     image: node
     volumes:
       - ./nodejs:/var/lib/nodejs
     working_dir: /var/lib/nodejs
+    networks:
+      - docker_xxx
+    ports:
+      - "3000:3000"
+      - "8787:8787"
     restart: always
-#    depends_on:
-#      - db
-#    command: npm install run start
-    command: bash -c "./wait-for-it.sh db:3306 -- npm install && npm run start"
-#    ports:
-#      - 1234:1234
-#      - 1235:1235
-# TODO mysql variables
-#    environment:
-#      - MONGO_USERNAME=$MONGO_USERNAME
-#      - MONGO_PASSWORD=$MONGO_PASSWORD
-#      - MONGO_HOSTNAME=db
-#      - MONGO_PORT=$MONGO_PORT
-#      - MONGO_DB=$MONGO_DB
-#    networks:
-#      - app-network
-
+    command: bash -c "./wait-for-it.sh mysql:3306 -- npm install && npm run start"
+    environment:
+      - PORT=3306
+      - DATABASE_HOST=mysql
+      - DATABASE_PASSWORD=P@ssw0rd+
+#      - EGG_SERVER_ENV=local
+#      - NODE_ENV=development
+networks:
+  docker_xxx:
+    driver: bridge
