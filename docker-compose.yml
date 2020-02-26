@@ -11,9 +11,6 @@ services:
       - 3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=P@ssw0rd+
-#      - MYSQL_DATABASE=database
-#      - MYSQL_USER=user
-#      - MYSQL_PASSWORD=passwd
   flyway:
     depends_on:
       - mysql
@@ -24,6 +21,9 @@ services:
       - docker_xxx
     command: -url=jdbc:mysql://mysql -schemas=myschema -user=root -password=P@ssw0rd+ -connectRetries=60 -X migrate
   nodejs:
+#   TODO wait flyway execution instead of depends_on.
+    depends_on:
+      - flyway
     image: node
     volumes:
       - ./nodejs:/var/lib/nodejs
@@ -34,10 +34,6 @@ services:
       - "3000:3000"
       - "8787:8787"
     command: bash -c './wait-for-it.sh mysql:3306 -- npm start'
-    environment:
-      - PORT=3306
-      - DATABASE_HOST=mysql
-      - DATABASE_PASSWORD=P@ssw0rd+
 networks:
   docker_xxx:
     driver: bridge
