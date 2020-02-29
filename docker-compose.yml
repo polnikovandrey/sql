@@ -21,7 +21,6 @@ services:
       - docker_xxx
     command: -url=jdbc:mysql://mysql -schemas=myschema -user=root -password=P@ssw0rd+ -connectRetries=60 -X migrate
   nodejs:
-#   TODO wait flyway execution instead of depends_on.
     depends_on:
       - flyway
     image: node

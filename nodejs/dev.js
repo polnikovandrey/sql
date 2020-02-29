@@ -1,16 +1,23 @@
 'use strict';
 console.log(new Date() + ': Running dev script');
 const faker = require('faker');
+
 function divider(functionName, start) {
     if (start) console.log('');
     console.log('---- ' + (start ? 'Start of ' : 'End of ') + functionName + ' ----')
 }
+function executeWithDivider(functionName, command) {
+    divider(functionName, true);
+    command();
+    divider(functionName, false);
+}
+
 function generateAddress() {
-    divider('generateAddress()', true);
-    console.log(faker.address.streetAddress(false));
-    console.log(faker.address.city());
-    console.log(faker.address.state());
-    divider('generateAddress()', false);
+    executeWithDivider('generateAddress()', function() {
+        console.log(faker.address.streetAddress(false));
+        console.log(faker.address.city());
+        console.log(faker.address.state());
+    });
 }
 generateAddress();
 
@@ -21,12 +28,21 @@ let connection = mysql.createConnection({
     user: 'legacy_auth_user',
     password: 'legacy_auth_path'
 });
-function firstQuery(connection) {
+function firstQuery(connection, attempt) {
     connection.query('SELECT 2 + 2 AS solution', function (error, results) {
-        if (error) throw error;
-        divider('firstQuery()', true);
-        console.log('The solution of 2 + 2 is ' + results[0].solution);
-        divider('firstQuery()', false);
+        if (error) {
+            if (attempt < 100) {
+                // Waiting for flyway to append legacy_auth_user.
+                console.log(new Date() + ' Waiting mysql connection...');
+                setTimeout(firstQuery(connection, attempt + 1), 1000);
+            } else {
+                throw error;
+            }
+        } else {
+            executeWithDivider('firstQuery()', function() {
+                console.log('The solution of 2 + 2 is ' + results[0].solution);
+            });
+        }
     });
 }
-firstQuery(connection);
+firstQuery(connection, 0);
