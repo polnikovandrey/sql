@@ -66,13 +66,39 @@ queryNamedResults(connection);
 
 function createTable(connection) {
     const createTableQuery = 'CREATE TABLE users (email VARCHAR(255) PRIMARY KEY, created_at TIMESTAMP DEFAULT NOW()\n);';
-    connection.query(createTableQuery, function (error, results) {
+    connection.query(createTableQuery, function (error) {
         if (error) throw error;
         executeWithDivider('createTable()', function () {
-            console.log('Table users created: ' + results);
+            console.log('Table users created');
         });
     });
 }
 createTable(connection);
+
+function insertUserHardcoded(connection) {
+    const hardcodedInsertQuery = 'INSERT INTO users (email) VALUES ("jenna18@gmail.com")';
+    connection.query(hardcodedInsertQuery, function (error, results) {
+        if (error) throw error;
+        executeWithDivider('insertUserHardcoded()', function () {
+            console.log('Affected rows: ' + results.affectedRows);
+        });
+    });
+}
+insertUserHardcoded(connection);
+
+function insertUserDynamic(connection) {
+    const user = {
+        email: faker.internet.email(),
+        created_at: faker.date.past()
+    };
+    const dynamicInsertQuery = 'INSERT INTO users SET ?';
+    connection.query(dynamicInsertQuery, user, function (error, results) {
+        if (error) throw error;
+        executeWithDivider('insertUserDynamic()', function () {
+            console.log('Affected rows: ' + results.affectedRows);
+        });
+    });
+}
+insertUserDynamic(connection);
 
 connection.end();
