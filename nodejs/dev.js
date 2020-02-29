@@ -29,7 +29,7 @@ let connection = mysql.createConnection({
     password: 'legacy_auth_path'
 });
 function firstQuery(connection, attempt) {
-    connection.query('SELECT 2 + 2 AS solution', function (error, results) {
+    connection.query('SELECT 2 + 2 as value', function (error, results) {
         if (error) {
             if (attempt < 100) {
                 // Waiting for flyway to append legacy_auth_user.
@@ -40,10 +40,25 @@ function firstQuery(connection, attempt) {
             }
         } else {
             executeWithDivider('firstQuery()', function() {
-                console.log('The solution of 2 + 2 is ' + results[0].solution);
+                console.log('results: ' + results);
+                console.log('results[0]: ' + results[0]);
+                console.log('results[0].value: ' + results[0].value);
             });
         }
     });
 }
 firstQuery(connection, 0);
+
+function queryNamedResults(connection) {
+    connection.query('SELECT  CURTIME() as time, CURDATE() as date, NOW() as aNow', function (error, results) {
+        if (error) throw error;
+        executeWithDivider('queryNamedResults()', function() {
+            console.log(results[0].time);
+            console.log(results[0].date);
+            console.log(results[0].aNow);
+        });
+    });
+}
+queryNamedResults(connection);
+
 connection.end();
