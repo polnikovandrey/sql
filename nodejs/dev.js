@@ -89,13 +89,14 @@ insertUserHardcoded(connection);
 function insertUserDynamic(connection) {
     const user = {
         email: faker.internet.email(),
-        created_at: faker.date.past()
+        created_at: faker.date.past()       // Note: mysql lib converts js date to a valid mysql date format
     };
     const dynamicInsertQuery = 'INSERT INTO users SET ?';
-    connection.query(dynamicInsertQuery, user, function (error, results) {
+    const end_result = connection.query(dynamicInsertQuery, user, function (error, results) {
         if (error) throw error;
         executeWithDivider('insertUserDynamic()', function () {
             console.log('Affected rows: ' + results.affectedRows);
+            console.log('Compiled sql: ' + end_result.sql);
         });
     });
 }
@@ -122,5 +123,20 @@ function selectCountUsers(connection) {
     });
 }
 selectCountUsers(connection);
+
+function insert500Users(connection) {
+    const query = 'INSERT INTO users (email, created_at) VALUES ?';
+    const data = [];
+    for (let i = 0; i < 500; i++) {
+        data.push([faker.internet.email(), faker.date.past()]);
+    }
+    connection.query(query, [data], function(error, results) {
+        if (error) throw error;
+        executeWithDivider('insert500users()', function () {
+            console.log('Count inserted users: ' + results.affectedRows);
+        })
+    });
+}
+insert500Users(connection);
 
 connection.end();
