@@ -46,3 +46,4 @@ function firstQuery(connection, attempt) {
     });
 }
 firstQuery(connection, 0);
+connection.end();
