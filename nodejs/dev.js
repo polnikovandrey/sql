@@ -101,4 +101,26 @@ function insertUserDynamic(connection) {
 }
 insertUserDynamic(connection);
 
+function selectAllUsers(connection) {
+    const query = 'SELECT * FROM users';
+    connection.query(query, function (error, results) {
+        if (error) throw error;
+        executeWithDivider('selectAllUsers()', function () {
+            console.log(results);
+        });
+    });
+}
+selectAllUsers(connection);
+
+function selectCountUsers(connection) {
+    const query = 'SELECT COUNT(*) AS totalUsers FROM users';
+    connection.query(query, function (error, results) {
+        if (error) throw error;
+        executeWithDivider('selectCountUsers()', function () {
+            console.log(results);
+        });
+    });
+}
+selectCountUsers(connection);
+
 connection.end();
