@@ -76,7 +76,7 @@ function createTable(connection) {
 createTable(connection);
 
 function insertUserHardcoded(connection) {
-    const hardcodedInsertQuery = 'INSERT INTO users (email) VALUES ("jenna18@gmail.com")';
+    const hardcodedInsertQuery = 'INSERT INTO users (email) VALUES ("jenna18@tut.by")';
     connection.query(hardcodedInsertQuery, function (error, results) {
         if (error) throw error;
         executeWithDivider('insertUserHardcoded()', function () {
@@ -138,5 +138,76 @@ function insert500Users(connection) {
     });
 }
 insert500Users(connection);
+
+function findEarliestUserCreatedAtDate(connection) {
+    // Variant: const query = 'SELECT DATE_FORMAT(MIN(created_at), "%M %D %Y") AS earliest_date FROM users';
+    const query = 'SELECT DATE_FORMAT(created_at, "%M %D %Y") AS earliest_date FROM users ORDER BY created_at LIMIT 1';
+    connection.query(query, function(error, results) {
+        if (error) throw error;
+        executeWithDivider('findEarliestUserCreatedAtDate()', function () {
+            console.log(results);
+        });
+    });
+}
+findEarliestUserCreatedAtDate(connection);
+
+function findEarliestUserEmail(connection) {
+    const query = 'SELECT email FROM users ORDER BY created_at LIMIT 1';
+    connection.query(query, function(error, results) {
+        if (error) throw error;
+        executeWithDivider('findEarliestUserEmail()', function () {
+            console.log(results);
+        });
+    });
+}
+findEarliestUserEmail(connection);
+
+function countUsersPerMonth(connection) {
+    const query = 'SELECT MONTHNAME(created_at) AS month, COUNT(*) AS count FROM users GROUP BY month ORDER BY count DESC';
+    connection.query(query, function(error, results) {
+        if (error) throw error;
+        executeWithDivider('countUsersPerMonth()', function () {
+            console.log(results);
+        });
+    });
+}
+countUsersPerMonth(connection);
+
+function countYahooUsers(connection) {
+    const query = 'SELECT COUNT(*) AS yahoo_users FROM users WHERE email LIKE "%@yahoo.com"';
+    connection.query(query, function(error, results) {
+        if (error) throw error;
+        executeWithDivider('countYahooUsers()', function () {
+            console.log(results);
+        });
+    });
+}
+countYahooUsers(connection);
+
+function countUsersPerHost(connection) {
+    /*
+        Variant: const query = 'SELECT' +
+            ' CASE' +
+        ' WHEN email LIKE "%gmail.com" THEN "gmail"' +
+        ' WHEN email LIKE "%yahoo.com" THEN "yahoo"' +
+        ' WHEN email LIKE "%hotmail.com" THEN "hotmail"' +
+        ' ELSE "other" END' +
+        ' AS host, COUNT(*) AS users FROM users GROUP BY host ORDER BY users DESC';
+     */
+    const query = 'SELECT' +
+        ' CASE SUBSTRING_INDEX(SUBSTRING_INDEX(email, "@", -1), ".", 1)' +
+        ' WHEN "gmail" THEN "gmail"' +
+        ' WHEN "yahoo" THEN "yahoo"' +
+        ' WHEN "hotmail" THEN "hotmail"' +
+        ' ELSE "other" END' +
+        ' AS host, COUNT(*) AS users FROM users GROUP BY host ORDER BY users DESC';
+    connection.query(query, function(error, results) {
+        if (error) throw error;
+        executeWithDivider('countUsersPerHost()', function () {
+            console.log(results);
+        });
+    });
+}
+countUsersPerHost(connection);
 
 connection.end();
