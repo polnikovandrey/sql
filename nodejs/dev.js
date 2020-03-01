@@ -23,7 +23,7 @@ generateAddress();
 
 const mysql = require('mysql');
 // Mysql server >8.0 authentication was not supported. Using legacy auth. See V14__Chapter16_Introducing_node.sql comment.
-let connection = mysql.createConnection({
+const connection = mysql.createConnection({
     host: 'mysql',
     user: 'legacy_auth_user',
     password: 'legacy_auth_path',
