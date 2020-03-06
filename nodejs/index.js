@@ -13,8 +13,9 @@ const connection = mysql.createConnection({
 });
 
 const app = express();
-app.use(bodyParser.urlencoded({extended: true}));   // Using body-parser request body parser to get post request parameters.
 app.set('view engine', 'ejs');      // Using ejs template engine.
+app.use(bodyParser.urlencoded({extended: true}));   // Using body-parser request body parser to get post request parameters.
+app.use(express.static(__dirname + '/public'));
 app.get('/', (req, res) => {
     const query = 'SELECT COUNT(*) AS count FROM users';
     connection.query(query, function (error, results) {
