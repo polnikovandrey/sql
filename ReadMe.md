@@ -1,5 +1,8 @@
 ## Docker + MySql + Flyway
 
+### Run configuration
+see RunConfig.png
+
 ### Docker tls security
 ####!!! On Windows Docker Desktop tls connection is available only with Windows containers !!!
 
